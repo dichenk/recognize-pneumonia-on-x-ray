@@ -1,12 +1,9 @@
 import numpy as np  # пакет для работы с массивами данных
 
-# загружаем результаты распознавания
-normal_test = np.loadtxt('result_recognition_normal.csv', delimiter=',')
+
+normal_test = np.loadtxt('result_recognition_normal.csv', delimiter=',')  # результаты распознавания
 pn_test = np.loadtxt('result_recognition_pn.csv', delimiter=',')
-
-
 board = 0.9  # граница достоверности
-
 normal_prob = 0  # вероятность правильного диагноза при существующей границе
 pn_prob = 0  # вероятность правильного диагноза при существующей границе
 
