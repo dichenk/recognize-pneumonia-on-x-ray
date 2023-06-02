@@ -8,7 +8,7 @@ img_path_train_nrm_end = 'NORMAL_SMALL_half/*'
 img_path_train_pn_end = 'PNEUMONIA_SMALL_half/*'
 float_formatter = "{:.5f}".format  # формат вывода для действительных чисел
 np.set_printoptions(formatter={'float_kind':float_formatter})  # формат вывода для действительных чисел
-boarder = 125
+boarder = 85
 
 #  чтение изображений
 def read_img(our_img):  # картинка -> np.array
@@ -48,12 +48,12 @@ def give_me_delta(img, dlt):  # получение коррекции веса (
 
 
 keys = np.array([[1, 0], [0, 1]])  #normal and pneumonia
-# weights = np.zeros((len(img_train_normal_np[0]), len(keys)), dtype='float64')  # веса
-weights = np.loadtxt('text3.csv', delimiter=',')  # веса
+weights = np.zeros((len(img_train_normal_np[0]), len(keys)), dtype='float64')  # веса
+# weights = np.loadtxt('text3.csv', delimiter=',')  # веса
 
 
 alpha = 0.00001  # коэффициент
-temp_var = 300000  # для обучения ставили 2000000
+temp_var = 0  # для обучения ставили 2000000
 while temp_var > 0:
     temp_var -= 1
     # print(temp_var)
@@ -74,4 +74,9 @@ while temp_var > 0:
     weight_deltas = give_me_delta(reference_img, delta)  # то, на что мы будем корректировать вес
     weights -= alpha * weight_deltas
 
-np.savetxt('text4.csv', weights, delimiter=',')
+# text3.csv - вес после 300000 кругов обучения.
+# text4.csv - вес после 300000 + 300000 кругов обучения.
+# text5.csv - вес после 600000 кругов обучения, boarder = 85
+
+
+# np.savetxt('text6.csv', weights, delimiter=',')

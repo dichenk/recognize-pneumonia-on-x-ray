@@ -1,19 +1,21 @@
-
+# import testing
 import numpy as np  # пакет для работы с массивами данных
 
-normal_test = np.loadtxt('normal2.csv', delimiter=',')
-pn_test = np.loadtxt('pn2.csv', delimiter=',')
+normal_test = np.loadtxt('result_normal_5.csv', delimiter=',')
+pn_test = np.loadtxt('result_pn_5.csv', delimiter=',')
 
-# print(normal_test)
+# names_normal = np.loadtxt('normal_name_5.csv', delimiter=',')
+# names_pn = np.loadtxt('pn_name_5.csv', delimiter=',')
 
-board = .85
+board = 0.7
 
 normal_prob = 0
 pn_prob = 0
 
 for i in normal_test:
     if i[0] > board:
-       normal_prob += 1 
+       normal_prob += 1
+       print('раз')
 
 for i in pn_test:
     if i[1] > board:
