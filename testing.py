@@ -1,69 +1,38 @@
-
 import training
 import numpy as np
 import glob
 
 
-'''
-Тестирование на обучающем наборе данных.
-a = 5
-# тестируем нейросеть
-print('сначала нормальные')
-for i in img_train_normal_np:
-    prediction = neural_network(i, weights)
-    print('prediction = ', prediction)
-    a -= 1
-    if a == -1:
-        break
-
-a = 5
-print('теперь ненормальные')
-for i in img_train_pn_np:
-    prediction = neural_network(i, weights)
-    print('prediction = ', prediction)
-    a -= 1
-    if a == -1:
-        break
-'''
-
-
-# Тестирование на тестовом наборе данных.
-
-
-weight_test = np.loadtxt('text5.csv', delimiter=',')
+# загружаем весовые коэффициенты
+weight_test = np.loadtxt('weights.csv', delimiter=',')
  
-img_path_test_begin = 'img/test/'
-img_path_test_nrm_end = 'NORMAL_SMALL_half/*'
-img_path_test_pn_end = 'PNEUMONIA_SMALL_half/*'
+# расположение тестового набора данных
+img_path_test_nrm = 'img/test/NORMAL_SMALL_half/*'
+img_path_test_pn = 'img/test/PNEUMONIA_SMALL_half/*'
 
-img_test_normal_np = []
-name_normal = []
-for i in glob.glob(img_path_test_begin + img_path_test_nrm_end):
+img_test_normal_np = []  # считываем изображения
+for i in glob.glob(img_path_test_nrm):
     result = training.read_img(i)
     img_test_normal_np.append(result)
-    name_normal.append(i)
 
-img_test_pn_np = []
-for i in glob.glob(img_path_test_begin + img_path_test_pn_end):
+img_test_pn_np = []  # считываем изображения
+for i in glob.glob(img_path_test_pn):
     result = training.read_img(i)
     img_test_pn_np.append(result)
-    
 
-
-prediction_normal = []
+prediction_normal = []  # результаты распознавания изображений здоровых
 for i in range(len(img_test_normal_np)):
     result = training.neural_network(img_test_normal_np[i], weight_test)
     prediction_normal.append(result)
-    if result[0] < .8: print(name_normal[i])
 
-
-prediction_pn = []
+prediction_pn = []  # результаты распознавания изображений больных
 for i in img_test_pn_np:
     result = training.neural_network(i, weight_test)
     prediction_pn.append(result)
 
-np.savetxt('result_normal_5.csv', prediction_normal, delimiter=',', fmt='%.5f')
-np.savetxt('result_pn_5.csv', prediction_pn, delimiter=',', fmt='%.5f')
+# сохраняем результаты распознавания
+np.savetxt('result_recognition_normal.csv', prediction_normal, delimiter=',', fmt='%.5f')
+np.savetxt('result_recognition_pn.csv', prediction_pn, delimiter=',', fmt='%.5f')
 
 
 
