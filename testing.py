@@ -30,8 +30,3 @@ for i in img_test_pn_np:  # распознаем изображения боль
 # сохраняем результаты распознавания
 np.savetxt('result_recognition_normal.csv', prediction_normal, delimiter=',', fmt='%.5f')
 np.savetxt('result_recognition_pn.csv', prediction_pn, delimiter=',', fmt='%.5f')
-
-
-
-
-

@@ -4,9 +4,8 @@ import random as rnd  # пакет для генерации случайных 
 import glob  # пакет для работы с файловой системой
 
 
-
 def read_img(our_img):  # функция чтения изображений и преобразования в массив np
-    our_img = Image.open(our_img)
+    our_img = Image.open(our_img)  # открываем изображение
     our_img = our_img.convert('L')  # в чб
     our_img = our_img.point(lambda p: 1 if p > boarder else 0)  # бинаризация
     our_img = np.array(our_img, dtype='float64')  # переформатируем изображение в массив
@@ -26,17 +25,16 @@ def give_me_delta(img, dlt):  # получение коррекции веса (
     out *= dlt
     return out
 
-
-img_path_train_nrm = 'img/train/NORMAL_SMALL_half/*'
-img_path_train_pn = 'img/train/PNEUMONIA_SMALL_half/*'
+img_path_train_nrm = 'img/train/NORMAL_SMALL_half/*'  # путь к обучающим образам здоровых пациентов
+img_path_train_pn = 'img/train/PNEUMONIA_SMALL_half/*'  # путь к обучающим образам больных пациентов
 float_formatter = "{:.5f}".format  # формат вывода для действительных чисел
 np.set_printoptions(formatter={'float_kind':float_formatter})  # формат вывода для действительных чисел
-boarder = 85  # граница бинаризации
+boarder = 40  # граница бинаризации
 img_train_normal_np = []  # массив изображений здоровых пациентов
 img_train_pn_np = []  # массив изображений больных пациентов
 keys = np.array([[1, 0], [0, 1]])  # шаблоны для обучения
-alpha = 0.00001  # коэффициент
-temp_var = 0  # количество циклов обучения.
+alpha = 0.00001  # коэффициент коррекции веса
+training_periods = 2000000  # количество циклов обучения.
 
 for i in glob.glob(img_path_train_nrm):  # чтение изображений здоровых пациентов
     img_train_normal_np.append(read_img(i))
@@ -44,12 +42,13 @@ for i in glob.glob(img_path_train_nrm):  # чтение изображений �
 for i in glob.glob(img_path_train_pn):  # чтение изображений больных пациентов
     img_train_pn_np.append(read_img(i))
 
-weights = np.zeros((len(img_train_normal_np[0]), len(keys)), dtype='float64')  # начальный вес
+weights = np.zeros((len(img_train_normal_np[0]), len(keys)), dtype='float64')  # начальный вес (нулевые векторы)
 
-while temp_var > 0:  # цикл обучения
-    temp_var -= 1  # счетчик циклов обучения
+while training_periods > 0:  # цикл обучения
+    training_periods = training_periods - 1  # счетчик циклов обучения
+
     n = rnd.randint(0, 1)  # рандомизация обучения
-
+    
     if n == 0:  # обучение на рентгене здорового ребенка
         n_2 = rnd.randint(0, len(img_train_normal_np) - 1)
         reference_img = img_train_normal_np[n_2]
@@ -64,5 +63,7 @@ while temp_var > 0:  # цикл обучения
     error = delta ** 2  # считаем ошибку
     weight_deltas = give_me_delta(reference_img, delta)  # то, на что мы будем корректировать вес
     weights -= alpha * weight_deltas  # коррекция веса
+    if training_periods % 10000 == 0:  # 
+        print(f'я на шаге {training_periods}')
 
-# np.savetxt('weights.csv', weights, delimiter=',')  # сохранение результата работы обучения в формате csv
+# np.savetxt('weights2.csv', weights, delimiter=',')  # сохранение результата работы обучения в формате csv
